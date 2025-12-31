@@ -13,6 +13,11 @@
   <!-- Manifest PWA -->
   <link rel="manifest" href="manifest.json">
 
+  <!-- iOS PWA meta -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Promo Shopee">
+
   <style>
     body { font-family: sans-serif; text-align: center; padding: 20px; }
     .popup {
@@ -46,17 +51,16 @@
   </div>
 </div>
 
-<!-- Contoh konten promo -->
-<h2>Promo Pilihan Hari Ini</h2>
-<a href="https://s.shopee.co.id/4q9124B5Il?share_channel_code=1">
-  <img src="logo.png" alt="Promo" style="width:200px;">
-</a>
-
 <script>
 let deferredPrompt;
 const popup = document.getElementById('popup');
 const promoBtn = document.getElementById('promoBtn');
 const dontShow = document.getElementById('dontShow');
+
+// Redirect otomatis jika dibuka dari Home Screen (PWA)
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  window.location.href = "https://shopee.co.id/affiliate-link-anda";
+}
 
 // Cek apakah popup sudah disembunyikan sebelumnya
 if (!localStorage.getItem('hidePwaPopup')) {
@@ -86,6 +90,11 @@ if (!localStorage.getItem('hidePwaPopup')) {
 
 }
 </script>
+
+<h2>Promo Pilihan Hari Ini</h2>
+<a href="https://s.shopee.co.id/4q9124B5Il?share_channel_code=1">
+  <img src="logo.png" alt="Promo" style="width:200px;">
+</a>
 
 </body>
 </html>
