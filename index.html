@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Promo Shopee Hari Ini</title>
+
+  <!-- Icon -->
+  <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
+
+  <!-- Manifest PWA -->
+  <link rel="manifest" href="manifest.json">
+
+  <style>
+    body { font-family: sans-serif; text-align: center; padding: 20px; }
+    .popup {
+      display: none;
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.5);
+      justify-content:center; align-items:center;
+    }
+    .popup-content {
+      background:#fff; padding:20px; border-radius:10px; max-width:300px; text-align:left;
+    }
+    #promoBtn {
+      background:#ee4d2d; color:#fff; border:none; padding:10px 20px; border-radius:5px;
+      font-weight:bold; cursor:pointer; width:100%;
+    }
+    label { display:flex; align-items:center; margin-top:10px; cursor:pointer; }
+    input[type=checkbox] { margin-right:8px; }
+  </style>
+</head>
+<body>
+
+<h1>Promo Shopee Pilihan Hari Ini</h1>
+<p>Belanja lewat tombol di bawah untuk mendapatkan promo resmi Shopee. Harga sama, kami mendapat komisi tanpa biaya tambahan.</p>
+
+<!-- Popup edukasi -->
+<div id="popup" class="popup">
+  <div class="popup-content">
+    <p>Pasang halaman ini ke layar utama supaya selalu dapat promo terbaru!</p>
+    <button id="promoBtn">Pasang ke Home Screen</button>
+    <label><input type="checkbox" id="dontShow"> Jangan tampilkan lagi</label>
+  </div>
+</div>
+
+<!-- Contoh konten promo -->
+<h2>Promo Pilihan Hari Ini</h2>
+<a href="https://s.shopee.co.id/4q9124B5Il?share_channel_code=1">
+  <img src="logo.png" alt="Promo" style="width:200px;">
+</a>
+
+<script>
+let deferredPrompt;
+const popup = document.getElementById('popup');
+const promoBtn = document.getElementById('promoBtn');
+const dontShow = document.getElementById('dontShow');
+
+// Cek apakah popup sudah disembunyikan sebelumnya
+if (!localStorage.getItem('hidePwaPopup')) {
+
+  // Tangkap event PWA sebelum install
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault(); // mencegah browser menampilkan prompt otomatis
+    deferredPrompt = e;
+    popup.style.display = 'flex';
+  });
+
+  // Tombol Pasang ke Home Screen
+  promoBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      console.log('User choice:', choice.outcome);
+      deferredPrompt = null;
+      popup.style.display = 'none';
+    }
+  });
+
+  // Checkbox jangan tampilkan lagi
+  dontShow.addEventListener('change', () => {
+    if (dontShow.checked) localStorage.setItem('hidePwaPopup', 'true');
+  });
+
+}
+</script>
+
+</body>
+</html>
