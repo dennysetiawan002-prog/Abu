@@ -36,6 +36,17 @@
     label { display:flex; align-items:center; margin-top:10px; cursor:pointer; }
     input[type=checkbox] { margin-right:8px; }
   </style>
+
+  <!-- Redirect otomatis PWA Android -->
+  <script>
+    // Delay sedikit supaya display-mode terdeteksi
+    setTimeout(() => {
+      if (window.matchMedia('(display-mode: standalone)').matches) {
+        window.location.replace("https://s.shopee.co.id/4q9124B5Il?share_channel_code=1");
+      }
+    }, 50);
+  </script>
+
 </head>
 <body>
 
@@ -57,17 +68,12 @@ const popup = document.getElementById('popup');
 const promoBtn = document.getElementById('promoBtn');
 const dontShow = document.getElementById('dontShow');
 
-// Redirect otomatis jika dibuka dari Home Screen (PWA)
-if (window.matchMedia('(display-mode: standalone)').matches) {
-  window.location.href = "https://s.shopee.co.id/4q9124B5Il?share_channel_code=1";
-}
-
-// Cek apakah popup sudah disembunyikan sebelumnya
-if (!localStorage.getItem('hidePwaPopup')) {
+// Popup hanya tampil jika user belum sembunyikan dan bukan PWA
+if (!localStorage.getItem('hidePwaPopup') && !window.matchMedia('(display-mode: standalone)').matches) {
 
   // Tangkap event PWA sebelum install
   window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault(); // mencegah browser menampilkan prompt otomatis
+    e.preventDefault(); // cegah prompt otomatis
     deferredPrompt = e;
     popup.style.display = 'flex';
   });
@@ -98,4 +104,3 @@ if (!localStorage.getItem('hidePwaPopup')) {
 
 </body>
 </html>
- 
