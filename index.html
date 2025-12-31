@@ -27,22 +27,23 @@
       justify-content:center; align-items:center;
     }
     .popup-content {
-      background:#fff; padding:20px; border-radius:10px; max-width:300px; text-align:left;
+      background:#fff; padding:20px; border-radius:10px; max-width:320px; text-align:left;
     }
-    #promoBtn {
-      background:#ee4d2d; color:#fff; border:none; padding:10px 20px; border-radius:5px;
-      font-weight:bold; cursor:pointer; width:100%;
+    #promoBtn, #shopeeBtn {
+      border:none; border-radius:8px; font-weight:bold; cursor:pointer;
+      width:100%; padding:15px; font-size:18px; margin-top:10px;
     }
+    #promoBtn { background:#ee4d2d; color:#fff; }
+    #shopeeBtn { background:#ff6600; color:#fff; }
     label { display:flex; align-items:center; margin-top:10px; cursor:pointer; }
     input[type=checkbox] { margin-right:8px; }
   </style>
 
-  <!-- Redirect otomatis PWA Android -->
+  <!-- Redirect otomatis PWA Android ke web affiliate -->
   <script>
-    // Delay sedikit supaya display-mode terdeteksi
     setTimeout(() => {
       if (window.matchMedia('(display-mode: standalone)').matches) {
-        window.location.replace("https://s.shopee.co.id/30hNGKMOqw");
+        window.location.replace("https://s.shopee.co.id/4q9124B5Il?share_channel_code=1");
       }
     }, 50);
   </script>
@@ -71,25 +72,21 @@ const dontShow = document.getElementById('dontShow');
 // Popup hanya tampil jika user belum sembunyikan dan bukan PWA
 if (!localStorage.getItem('hidePwaPopup') && !window.matchMedia('(display-mode: standalone)').matches) {
 
-  // Tangkap event PWA sebelum install
   window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault(); // cegah prompt otomatis
+    e.preventDefault();
     deferredPrompt = e;
     popup.style.display = 'flex';
   });
 
-  // Tombol Pasang ke Home Screen
   promoBtn.addEventListener('click', async () => {
     if (deferredPrompt) {
       deferredPrompt.prompt();
-      const choice = await deferredPrompt.userChoice;
-      console.log('User choice:', choice.outcome);
+      await deferredPrompt.userChoice;
       deferredPrompt = null;
       popup.style.display = 'none';
     }
   });
 
-  // Checkbox jangan tampilkan lagi
   dontShow.addEventListener('change', () => {
     if (dontShow.checked) localStorage.setItem('hidePwaPopup', 'true');
   });
@@ -98,9 +95,25 @@ if (!localStorage.getItem('hidePwaPopup') && !window.matchMedia('(display-mode: 
 </script>
 
 <h2>Promo Pilihan Hari Ini</h2>
-<a href="https://s.shopee.co.id/30hNGKMOqw">
-  <img src="icon.jpg" alt="Promo" style="width:200px;">
+<a href="https://s.shopee.co.id/4q9124B5Il?share_channel_code=1" target="_blank">
+  <img src="logo.jpg" alt="Promo" style="width:200px; margin-top:15px;">
 </a>
+
+<!-- Tombol Buka Shopee App -->
+<button id="shopeeBtn" onclick="openShopeeApp()">Buka di Shopee App</button>
+
+<script>
+function openShopeeApp() {
+  const intentURL = "intent://s.shopee.co.id/4q9124B5Il?share_channel_code=1#Intent;scheme=https;package=com.shopee.id;end";
+  const webURL = "https://s.shopee.co.id/4q9124B5Il?share_channel_code=1";
+
+  window.location = intentURL;
+
+  setTimeout(() => {
+    window.location = webURL;
+  }, 500);
+}
+</script>
 
 </body>
 </html>
