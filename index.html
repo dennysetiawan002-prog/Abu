@@ -1,61 +1,70 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Promo Shopee Hari Ini</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promo Shopee Hari Ini</title>
 
-  <!-- Icon -->
-  <link rel="icon" href="icon.jpg">
-  <link rel="apple-touch-icon" href="icon.jpg">
-  <link rel="apple-touch-icon" sizes="180x180" href="icon.jpg">
+<!-- Icon & Manifest -->
+<link rel="icon" href="icon.jpg">
+<link rel="apple-touch-icon" href="icon.jpg">
+<link rel="apple-touch-icon" sizes="180x180" href="icon.jpg">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Promo Shopee">
 
-  <!-- Manifest PWA -->
-  <link rel="manifest" href="manifest.json">
+<style>
+/* Reset & basic */
+* { box-sizing: border-box; margin:0; padding:0; }
+body { font-family:'Segoe UI', sans-serif; background:#f5f5f5; color:#333; text-align:center; padding:20px; }
+h1 { font-size:24px; margin-bottom:15px; }
+h2 { font-size:20px; margin-top:25px; }
 
-  <!-- iOS PWA meta -->
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Promo Shopee">
+/* Popup */
+.popup {
+  display: none; position: fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:999;
+}
+.popup-content {
+  background:#fff; padding:25px; border-radius:15px; max-width:350px; text-align:center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn { from {opacity:0; transform:scale(0.9);} to {opacity:1; transform:scale(1);} }
 
-  <style>
-    body { font-family: sans-serif; text-align: center; padding: 20px; }
-    .popup {
-      display: none;
-      position: fixed; top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.5);
-      justify-content:center; align-items:center;
-    }
-    .popup-content {
-      background:#fff; padding:20px; border-radius:10px; max-width:320px; text-align:left;
-    }
-    #promoBtn, #shopeeBtn {
-      border:none; border-radius:8px; font-weight:bold; cursor:pointer;
-      width:100%; padding:15px; font-size:18px; margin-top:10px;
-    }
-    #promoBtn { background:#ee4d2d; color:#fff; }
-    #shopeeBtn { background:#ff6600; color:#fff; }
-    label { display:flex; align-items:center; margin-top:10px; cursor:pointer; }
-    input[type=checkbox] { margin-right:8px; }
-  </style>
+button {
+  border:none; border-radius:10px; font-weight:bold; cursor:pointer;
+  width:100%; padding:18px; font-size:18px; margin-top:15px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+button:hover { transform: translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.3); }
+#promoBtn { background: linear-gradient(45deg,#ee4d2d,#ff7043); color:#fff; }
+#shopeeBtn { background: linear-gradient(45deg,#ff6600,#ff9900); color:#fff; }
 
-  <!-- Redirect otomatis PWA Android ke web affiliate -->
-  <script>
-    setTimeout(() => {
-      if (window.matchMedia('(display-mode: standalone)').matches) {
-        window.location.replace("https://s.shopee.co.id/4q9124B5Il?share_channel_code=1");
-      }
-    }, 50);
-  </script>
+/* Checkbox */
+label { display:flex; align-items:center; justify-content:center; margin-top:10px; cursor:pointer; font-size:14px; }
+input[type=checkbox] { margin-right:8px; }
 
+/* Promo Card */
+.promo-card {
+  background:#fff; border-radius:12px; padding:15px; margin:15px auto; max-width:320px;
+  box-shadow:0 6px 15px rgba(0,0,0,0.1); transition: transform 0.2s;
+}
+.promo-card:hover { transform: translateY(-3px); }
+.promo-card img { width:100%; border-radius:10px; margin-bottom:10px; }
+.promo-card h3 { font-size:18px; margin-bottom:8px; }
+.promo-card a { text-decoration:none; color:#ee4d2d; font-weight:bold; }
+
+</style>
 </head>
 <body>
 
 <h1>Promo Shopee Pilihan Hari Ini</h1>
-<p>Belanja lewat tombol di bawah untuk mendapatkan promo resmi Shopee. Harga sama, kami mendapat komisi tanpa biaya tambahan.</p>
+<p>Dapatkan promo eksklusif melalui tombol di bawah. Harga sama, kami mendapat komisi tanpa biaya tambahan.</p>
 
-<!-- Popup edukasi -->
-<div id="popup" class="popup">
+<!-- Popup 1: Edukasi / Pasang Home Screen -->
+<div id="popupInstall" class="popup">
   <div class="popup-content">
     <p>Pasang halaman ini ke layar utama supaya selalu dapat promo terbaru!</p>
     <button id="promoBtn">Pasang ke Home Screen</button>
@@ -63,19 +72,45 @@
   </div>
 </div>
 
+<!-- Popup 2: Buka Shopee App -->
+<div id="popupShopee" class="popup">
+  <div class="popup-content">
+    <p>Klik tombol di bawah untuk membuka aplikasi Shopee!</p>
+    <button id="shopeeBtn">Buka di Shopee App</button>
+  </div>
+</div>
+
+<h2>Promo Pilihan Hari Ini</h2>
+
+<!-- Contoh Card Promo -->
+<div class="promo-card">
+  <img src="promo1.png" alt="Promo 1">
+  <h3>Diskon Spesial Hari Ini</h3>
+  <a href="https://s.shopee.co.id/4q9124B5Il?share_channel_code=1" target="_blank">Buka Promo</a>
+</div>
+
+<div class="promo-card">
+  <img src="promo2.png" alt="Promo 2">
+  <h3>Gratis Ongkir + Cashback</h3>
+  <a href="https://s.shopee.co.id/4q9124B5Il?share_channel_code=1" target="_blank">Buka Promo</a>
+</div>
+
 <script>
-let deferredPrompt;
-const popup = document.getElementById('popup');
+// Element
+const popupInstall = document.getElementById('popupInstall');
+const popupShopee = document.getElementById('popupShopee');
 const promoBtn = document.getElementById('promoBtn');
+const shopeeBtn = document.getElementById('shopeeBtn');
 const dontShow = document.getElementById('dontShow');
 
-// Popup hanya tampil jika user belum sembunyikan dan bukan PWA
-if (!localStorage.getItem('hidePwaPopup') && !window.matchMedia('(display-mode: standalone)').matches) {
+let deferredPrompt;
 
+// ===== Browser biasa / pertama kali =====
+if (!localStorage.getItem('hidePwaPopup') && !window.matchMedia('(display-mode: standalone)').matches) {
   window.addEventListener('beforeinstallprompt', (e) => {
     e.preventDefault();
     deferredPrompt = e;
-    popup.style.display = 'flex';
+    popupInstall.style.display = 'flex';
   });
 
   promoBtn.addEventListener('click', async () => {
@@ -83,36 +118,32 @@ if (!localStorage.getItem('hidePwaPopup') && !window.matchMedia('(display-mode: 
       deferredPrompt.prompt();
       await deferredPrompt.userChoice;
       deferredPrompt = null;
-      popup.style.display = 'none';
+      popupInstall.style.display = 'none';
+      // Tandai sudah pasang PWA
+      localStorage.setItem('pwaInstalled', 'true');
     }
   });
 
   dontShow.addEventListener('change', () => {
     if (dontShow.checked) localStorage.setItem('hidePwaPopup', 'true');
   });
-
 }
-</script>
 
-<h2>Promo Pilihan Hari Ini</h2>
-<a href="https://s.shopee.co.id/4q9124B5Il?share_channel_code=1" target="_blank">
-  <img src="logo.jpg" alt="Promo" style="width:200px; margin-top:15px;">
-</a>
+// ===== PWA / Home Screen =====
+if (window.matchMedia('(display-mode: standalone)').matches) {
+  popupShopee.style.display = 'flex';
+}
 
-<!-- Tombol Buka Shopee App -->
-<button id="shopeeBtn" onclick="openShopeeApp()">Buka di Shopee App</button>
-
-<script>
-function openShopeeApp() {
+// ===== Tombol buka Shopee App =====
+shopeeBtn.addEventListener('click', () => {
   const intentURL = "intent://s.shopee.co.id/4q9124B5Il?share_channel_code=1#Intent;scheme=https;package=com.shopee.id;end";
   const webURL = "https://s.shopee.co.id/4q9124B5Il?share_channel_code=1";
 
   window.location = intentURL;
-
   setTimeout(() => {
     window.location = webURL;
   }, 500);
-}
+});
 </script>
 
 </body>
