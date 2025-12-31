@@ -19,7 +19,6 @@
 * { box-sizing: border-box; margin:0; padding:0; }
 body { font-family:'Segoe UI', sans-serif; background:#f5f5f5; color:#333; text-align:center; padding:20px; }
 h1 { font-size:24px; margin-bottom:15px; }
-h2 { font-size:20px; margin-top:25px; }
 
 /* Popup */
 .popup {
@@ -46,22 +45,13 @@ button:hover { transform: translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,0.3
 label { display:flex; align-items:center; justify-content:center; margin-top:10px; cursor:pointer; font-size:14px; }
 input[type=checkbox] { margin-right:8px; }
 
-/* Promo Card */
-.promo-card {
-  background:#fff; border-radius:12px; padding:15px; margin:15px auto; max-width:320px;
-  box-shadow:0 6px 15px rgba(0,0,0,0.1); transition: transform 0.2s;
-}
-.promo-card:hover { transform: translateY(-3px); }
-.promo-card img { width:100%; border-radius:10px; margin-bottom:10px; }
-.promo-card h3 { font-size:18px; margin-bottom:8px; }
-.promo-card a { text-decoration:none; color:#ee4d2d; font-weight:bold; }
-
+img.logo { width:200px; margin-top:30px; }
 </style>
 </head>
 <body>
 
 <h1>Promo Shopee Pilihan Hari Ini</h1>
-<p>Dapatkan promo eksklusif melalui tombol di bawah. Harga sama, kami mendapat komisi tanpa biaya tambahan.</p>
+<p>Belanja lewat tombol di bawah untuk mendapatkan promo resmi Shopee.</p>
 
 <!-- Popup 1: Edukasi / Pasang Home Screen -->
 <div id="popupInstall" class="popup">
@@ -80,20 +70,10 @@ input[type=checkbox] { margin-right:8px; }
   </div>
 </div>
 
-<h2>Promo Pilihan Hari Ini</h2>
-
-<!-- Contoh Card Promo -->
-<div class="promo-card">
-  <img src="promo1.png" alt="Promo 1">
-  <h3>Diskon Spesial Hari Ini</h3>
-  <a href="https://s.shopee.co.id/4q9124B5Il?share_channel_code=1" target="_blank">Buka Promo</a>
-</div>
-
-<div class="promo-card">
-  <img src="promo2.png" alt="Promo 2">
-  <h3>Gratis Ongkir + Cashback</h3>
-  <a href="https://s.shopee.co.id/4q9124B5Il?share_channel_code=1" target="_blank">Buka Promo</a>
-</div>
+<!-- Logo / Promo -->
+<a href="https://s.shopee.co.id/4q9124B5Il?share_channel_code=1" target="_blank">
+  <img src="logo.jpg" alt="Promo Shopee" class="logo">
+</a>
 
 <script>
 // Element
@@ -119,7 +99,6 @@ if (!localStorage.getItem('hidePwaPopup') && !window.matchMedia('(display-mode: 
       await deferredPrompt.userChoice;
       deferredPrompt = null;
       popupInstall.style.display = 'none';
-      // Tandai sudah pasang PWA
       localStorage.setItem('pwaInstalled', 'true');
     }
   });
