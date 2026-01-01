@@ -14,7 +14,7 @@ body {
 
 .container {
   padding: 12px;
-  padding-bottom: 100px;
+  padding-bottom: 110px;
 }
 
 .products {
@@ -25,9 +25,9 @@ body {
 
 .product {
   background: #fff;
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+  box-shadow: 0 2px 6px rgba(0,0,0,.15);
 }
 
 .product img {
@@ -35,19 +35,19 @@ body {
   display: block;
 }
 
-/* Floating Shopee Button */
+/* Floating Button */
 .shopee-btn {
   position: fixed;
-  bottom: 12px;
-  left: 12px;
-  right: 12px;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
   background: #ee4d2d;
   color: #fff;
   text-align: center;
-  padding: 16px;
+  padding: 18px;
   font-size: 18px;
   font-weight: bold;
-  border-radius: 16px;
+  border-radius: 18px;
   text-decoration: none;
   z-index: 999;
 }
@@ -56,7 +56,7 @@ body {
 .popup {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,.6);
+  background: rgba(0,0,0,.65);
   display: none;
   align-items: center;
   justify-content: center;
@@ -65,10 +65,10 @@ body {
 
 .popup-content {
   background: #fff;
-  padding: 20px;
+  padding: 22px;
   width: 85%;
   max-width: 320px;
-  border-radius: 14px;
+  border-radius: 16px;
   text-align: center;
 }
 
@@ -79,9 +79,9 @@ body {
 .popup-content button {
   width: 100%;
   padding: 14px;
-  margin-top: 10px;
+  margin-top: 12px;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   font-size: 16px;
   background: #ee4d2d;
   color: #fff;
@@ -91,20 +91,20 @@ body {
 
 <body>
 
-<!-- Popup Edukasi Add to Home Screen -->
+<!-- EDUKASI HOME SCREEN -->
 <div class="popup" id="installPopup">
   <div class="popup-content">
     <h3>📲 Tambahkan ke Home Screen</h3>
-    <p>Agar lebih cepat, silakan tambahkan halaman ini ke layar utama HP Anda.</p>
-    <button onclick="closePopup()">Mengerti</button>
+    <p>Pasang di layar utama agar akses lebih cepat & tidak hilang.</p>
+    <button onclick="closeInstall()">Mengerti</button>
   </div>
 </div>
 
-<!-- Popup Buka Shopee -->
+<!-- SHOPEE POPUP -->
 <div class="popup" id="shopeePopup">
   <div class="popup-content">
     <h3>🚀 Buka di Aplikasi Shopee</h3>
-    <p>Dapatkan harga & promo terbaik langsung di aplikasi.</p>
+    <p>Klik tombol di bawah untuk lanjut ke Shopee App.</p>
     <button id="popupShopeeBtn">Buka Shopee App</button>
   </div>
 </div>
@@ -117,50 +117,62 @@ body {
 
 <script>
 const DATA_URL = "https://script.google.com/macros/s/AKfycbx8Aug7mU3SAngUsnL9cBc7zBp2eg7rZEAMewCXtASy-_eDTAqrzIpzQSxYEbQJ6-Ri2Q/exec";
-const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-// Popup logic
-window.onload = () => {
-  if (isPWA) {
+// CEK PWA DENGAN CARA PALING AMAN
+function isRunningAsPWA() {
+  return window.matchMedia('(display-mode: standalone)').matches;
+}
+
+// EDUKASI MUNCUL SETIAP BUKA DI BROWSER
+window.addEventListener("load", () => {
+  if (isRunningAsPWA()) {
     document.getElementById("shopeePopup").style.display = "flex";
   } else {
     document.getElementById("installPopup").style.display = "flex";
   }
-};
+});
 
-function closePopup() {
+function closeInstall() {
   document.getElementById("installPopup").style.display = "none";
 }
 
-// Load products
+// AMBIL DATA PRODUK
 fetch(DATA_URL)
-  .then(r => r.json())
-  .then(data => {
+  .then(res => res.json())
+  .then(json => {
+
+    // 🔥 FIX: dukung 2 format JSON
+    const data = json.data ? json.data : json;
+
     const products = document.getElementById("products");
     const shopeeBtn = document.getElementById("shopeeButton");
     const popupBtn = document.getElementById("popupShopeeBtn");
 
     if (data.length > 0) {
       shopeeBtn.href = data[0].link;
-      popupBtn.onclick = () => window.location.href = data[0].link;
+      popupBtn.onclick = () => location.href = data[0].link;
     }
 
-    data.forEach(p => {
+    data.forEach(item => {
+      if (!item.image || !item.link) return;
+
       const a = document.createElement("a");
-      a.href = p.link;
+      a.href = item.link;
       a.target = "_blank";
 
-      const div = document.createElement("div");
-      div.className = "product";
+      const card = document.createElement("div");
+      card.className = "product";
 
       const img = document.createElement("img");
-      img.src = p.image;
+      img.src = item.image;
+      img.loading = "lazy";
 
-      div.appendChild(img);
-      a.appendChild(div);
+      card.appendChild(img);
+      a.appendChild(card);
       products.appendChild(a);
     });
-  });
+  })
+  .catch(err => console.error("JSON error:", err));
 </script>
 
 </body>
