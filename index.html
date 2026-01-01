@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Promo Shopee</title>
 
+<link rel="manifest" href="manifest.json">
+
 <style>
 body {
   margin: 0;
@@ -14,7 +16,7 @@ body {
 
 .container {
   padding: 12px;
-  padding-bottom: 110px;
+  padding-bottom: 120px;
 }
 
 .products {
@@ -35,7 +37,6 @@ body {
   display: block;
 }
 
-/* Floating Button */
 .shopee-btn {
   position: fixed;
   bottom: 14px;
@@ -52,7 +53,6 @@ body {
   z-index: 999;
 }
 
-/* Popup */
 .popup {
   position: fixed;
   inset: 0;
@@ -72,10 +72,6 @@ body {
   text-align: center;
 }
 
-.popup-content h3 {
-  margin-top: 0;
-}
-
 .popup-content button {
   width: 100%;
   padding: 14px;
@@ -86,26 +82,32 @@ body {
   background: #ee4d2d;
   color: #fff;
 }
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 14px;
+  margin-top: 10px;
+}
 </style>
 </head>
 
 <body>
 
-<!-- EDUKASI HOME SCREEN -->
+<!-- INSTALL POPUP -->
 <div class="popup" id="installPopup">
   <div class="popup-content">
-    <h3>📲 Tambahkan ke Home Screen</h3>
-    <p>Pasang di layar utama agar akses lebih cepat & tidak hilang.</p>
-    <button onclick="closeInstall()">Mengerti</button>
-  </div>
-</div>
+    <h3>📲 Pasang ke Home Screen</h3>
+    <p>Akses promo lebih cepat tanpa buka browser.</p>
 
-<!-- SHOPEE POPUP -->
-<div class="popup" id="shopeePopup">
-  <div class="popup-content">
-    <h3>🚀 Buka di Aplikasi Shopee</h3>
-    <p>Klik tombol di bawah untuk lanjut ke Shopee App.</p>
-    <button id="popupShopeeBtn">Buka Shopee App</button>
+    <div class="checkbox">
+      <input type="checkbox" id="dontShow">
+      <label for="dontShow">Jangan tampilkan lagi</label>
+    </div>
+
+    <button id="installBtn">Tambahkan</button>
   </div>
 </div>
 
@@ -117,62 +119,69 @@ body {
 
 <script>
 const DATA_URL = "https://script.google.com/macros/s/AKfycbx8Aug7mU3SAngUsnL9cBc7zBp2eg7rZEAMewCXtASy-_eDTAqrzIpzQSxYEbQJ6-Ri2Q/exec";
+let deferredPrompt = null;
 
-// CEK PWA DENGAN CARA PALING AMAN
-function isRunningAsPWA() {
+// TANGKAP EVENT INSTALL RESMI
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+});
+
+// CEK MODE PWA
+function isPWA() {
   return window.matchMedia('(display-mode: standalone)').matches;
 }
 
-// EDUKASI MUNCUL SETIAP BUKA DI BROWSER
+// TAMPILKAN EDUKASI
 window.addEventListener("load", () => {
-  if (isRunningAsPWA()) {
-    document.getElementById("shopeePopup").style.display = "flex";
-  } else {
-    document.getElementById("installPopup").style.display = "flex";
-  }
+  if (isPWA()) return;
+  if (localStorage.getItem("hideInstall")) return;
+  document.getElementById("installPopup").style.display = "flex";
 });
 
-function closeInstall() {
-  document.getElementById("installPopup").style.display = "none";
-}
+// KLIK INSTALL
+document.getElementById("installBtn").onclick = async () => {
+  if (document.getElementById("dontShow").checked) {
+    localStorage.setItem("hideInstall", "1");
+  }
 
-// AMBIL DATA PRODUK
+  document.getElementById("installPopup").style.display = "none";
+
+  if (deferredPrompt) {
+    deferredPrompt.prompt();
+    deferredPrompt = null;
+  } else {
+    alert("Jika tidak muncul, klik ⋮ browser lalu pilih 'Tambahkan ke layar utama'");
+  }
+};
+
+// LOAD PRODUK
 fetch(DATA_URL)
   .then(res => res.json())
   .then(json => {
-
-    // 🔥 FIX: dukung 2 format JSON
     const data = json.data ? json.data : json;
-
     const products = document.getElementById("products");
     const shopeeBtn = document.getElementById("shopeeButton");
-    const popupBtn = document.getElementById("popupShopeeBtn");
 
-    if (data.length > 0) {
-      shopeeBtn.href = data[0].link;
-      popupBtn.onclick = () => location.href = data[0].link;
-    }
+    if (data.length) shopeeBtn.href = data[0].link;
 
-    data.forEach(item => {
-      if (!item.image || !item.link) return;
-
+    data.forEach(p => {
+      if (!p.image || !p.link) return;
       const a = document.createElement("a");
-      a.href = item.link;
+      a.href = p.link;
       a.target = "_blank";
 
-      const card = document.createElement("div");
-      card.className = "product";
+      const d = document.createElement("div");
+      d.className = "product";
 
-      const img = document.createElement("img");
-      img.src = item.image;
-      img.loading = "lazy";
+      const i = document.createElement("img");
+      i.src = p.image;
 
-      card.appendChild(img);
-      a.appendChild(card);
+      d.appendChild(i);
+      a.appendChild(d);
       products.appendChild(a);
     });
-  })
-  .catch(err => console.error("JSON error:", err));
+  });
 </script>
 
 </body>
