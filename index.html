@@ -163,20 +163,23 @@ document.getElementById("installBtn").onclick = async () => {
 function renderProducts(data) {
   const products = document.getElementById("products");
   const shopeeBtn = document.getElementById("shopeeButton");
+  const loading = document.getElementById("loading");
 
   products.innerHTML = "";
 
-  if (data.length) shopeeBtn.href = data[0].link;
+  if (!Array.isArray(data)) {
+    loading.style.display = "none";
+    return;
+  }
+
+  let rendered = false;
 
   data.forEach(p => {
-    if (!p.image || !p.link) return;
+    if (!p || !p.image || !p.link) return;
 
     const a = document.createElement("a");
     a.href = p.link;
     a.target = "_blank";
-    
-
-    // 🔥 klik ringan (B)
     a.onclick = () => {
       setTimeout(() => {
         trackProductClick(p.id || p.link || 'unknown');
@@ -192,8 +195,24 @@ function renderProducts(data) {
     d.appendChild(i);
     a.appendChild(d);
     products.appendChild(a);
+
+    // 🔥 BEGITU 1 PRODUK MASUK → LOADING MATI
+    if (!rendered) {
+      loading.style.display = "none";
+      rendered = true;
+    }
   });
-document.getElementById("loading").style.display = "none";
+
+  // Kalau data kosong → tetap matikan loading
+  if (!rendered) {
+    loading.style.display = "none";
+  }
+
+  if (data.length && data[0].link) {
+    shopeeBtn.href = data[0].link;
+  }
+}
+
 }
 
   // 🔹 TAMPILKAN DARI CACHE DULU (CEPAT)
