@@ -118,7 +118,7 @@ body {
 <a href="#" id="shopeeButton" class="shopee-btn">🚀 Buka Shopee App</a>
 
 <script>
-const DATA_URL = "https://script.google.com/macros/s/AKfycbx8Aug7mU3SAngUsnL9cBc7zBp2eg7rZEAMewCXtASy-_eDTAqrzIpzQSxYEbQJ6-Ri2Q/exec";
+const DATA_URL = "https://script.google.com/macros/s/AKfycbygjkVAE0O_F7Md5kXi_H8zy-JmzRgJrWZH6k_mPTMdR3X34jUUvG5aYJU6j9-E-FrV/exec";
 let deferredPrompt = null;
 
 // TANGKAP EVENT INSTALL RESMI
@@ -168,8 +168,10 @@ fetch(DATA_URL)
     data.forEach(p => {
       if (!p.image || !p.link) return;
       const a = document.createElement("a");
-      a.href = p.link;
-      a.target = "_blank";
+a.href = p.link;
+a.target = "_blank";
+a.onclick = () => trackProductClick(p.id);
+
 
       const d = document.createElement("div");
       d.className = "product";
@@ -187,7 +189,7 @@ fetch(DATA_URL)
   
 <script>
 if (window.matchMedia('(display-mode: standalone)').matches) {
-  fetch('https://script.google.com/macros/s/AKfycbx8Aug7mU3SAngUsnL9cBc7zBp2eg7rZEAMewCXtASy-_eDTAqrzIpzQSxYEbQJ6-Ri2Q/exec', {
+  fetch('https://script.google.com/macros/s/AKfycbygjkVAE0O_F7Md5kXi_H8zy-JmzRgJrWZH6k_mPTMdR3X34jUUvG5aYJU6j9-E-FrV/exec', {
     method: 'POST',
     body: JSON.stringify({
       event: 'pwa_open',
@@ -197,6 +199,19 @@ if (window.matchMedia('(display-mode: standalone)').matches) {
 }
 </script>
 
+<script>
+function trackProductClick(productId) {
+  fetch('https://script.google.com/macros/s/AKfycbygjkVAE0O_F7Md5kXi_H8zy-JmzRgJrWZH6k_mPTMdR3X34jUUvG5aYJU6j9-E-FrV/exec', {
+    method: 'POST',
+    body: JSON.stringify({
+      product_id: productId,
+      ua: navigator.userAgent
+    })
+  }).catch(err => {
+    console.log('tracking error', err);
+  });
+}
+</script>
 
   
   
