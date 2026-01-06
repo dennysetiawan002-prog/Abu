@@ -118,48 +118,40 @@ body {
   <div class="products" id="products"></div>
 </div>
 
-
 <a href="#" id="shopeeButton" class="shopee-btn">🚀 Buka Shopee App</a>
 
 <script>
 const DATA_URL = "https://script.google.com/macros/s/AKfycbygjkVAE0O_F7Md5kXi_H8zy-JmzRgJrWZH6k_mPTMdR3X34jUUvG5aYJU6j9-E-FrV/exec";
 let deferredPrompt = null;
 
-// TANGKAP EVENT INSTALL RESMI
+/* ===== INSTALL PWA ===== */
 window.addEventListener("beforeinstallprompt", (e) => {
   e.preventDefault();
   deferredPrompt = e;
 });
 
-// CEK MODE PWA
 function isPWA() {
   return window.matchMedia('(display-mode: standalone)').matches;
 }
 
-// TAMPILKAN EDUKASI
 window.addEventListener("load", () => {
   if (isPWA()) return;
   if (localStorage.getItem("hideInstall")) return;
   document.getElementById("installPopup").style.display = "flex";
 });
 
-// KLIK INSTALL
 document.getElementById("installBtn").onclick = async () => {
   if (document.getElementById("dontShow").checked) {
     localStorage.setItem("hideInstall", "1");
   }
-
   document.getElementById("installPopup").style.display = "none";
-
   if (deferredPrompt) {
     deferredPrompt.prompt();
     deferredPrompt = null;
-  } else {
-    alert("Jika tidak muncul, klik ⋮ browser lalu pilih 'Tambahkan ke layar utama'");
   }
 };
 
-// LOAD PRODUK
+/* ===== RENDER PRODUK ===== */
 function renderProducts(data) {
   const products = document.getElementById("products");
   const shopeeBtn = document.getElementById("shopeeButton");
@@ -180,7 +172,7 @@ function renderProducts(data) {
     a.target = "_blank";
     a.onclick = () => {
       setTimeout(() => {
-        trackProductClick(p.id || p.link || 'unknown');
+        trackProductClick(p.id || p.link || "unknown");
       }, 0);
     };
 
@@ -202,8 +194,7 @@ function renderProducts(data) {
   loading.style.display = "none";
 }
 
-
-  // 🔹 TAMPILKAN DARI CACHE DULU (CEPAT)
+/* ===== CACHE ===== */
 const cached = localStorage.getItem("products_cache");
 if (cached) {
   try {
@@ -213,52 +204,41 @@ if (cached) {
   }
 }
 
-// 🔹 FETCH DATA TERBARU (BACKGROUND)
+/* ===== FETCH DATA ===== */
 fetch(DATA_URL + "?action=products")
   .then(res => res.json())
   .then(json => {
     const data = json.data ? json.data : json;
     localStorage.setItem("products_cache", JSON.stringify(data));
     renderProducts(data);
-    
   })
   .catch(err => {
     document.getElementById("loading").innerText = "Gagal memuat promo";
     console.log(err);
   });
 
-
-  });
-</script>
-
-  
-<script>
+/* ===== TRACK OPEN PWA ===== */
 if (window.matchMedia('(display-mode: standalone)').matches) {
-  fetch('https://script.google.com/macros/s/AKfycbygjkVAE0O_F7Md5kXi_H8zy-JmzRgJrWZH6k_mPTMdR3X34jUUvG5aYJU6j9-E-FrV/exec', {
+  fetch(DATA_URL, {
     method: 'POST',
     body: JSON.stringify({
       event: 'pwa_open',
-      userAgent: navigator.userAgent
+      ua: navigator.userAgent
     })
   });
 }
-</script>
 
-<script>
+/* ===== TRACK KLIK PRODUK ===== */
 function trackProductClick(productId) {
-  fetch('https://script.google.com/macros/s/AKfycbygjkVAE0O_F7Md5kXi_H8zy-JmzRgJrWZH6k_mPTMdR3X34jUUvG5aYJU6j9-E-FrV/exec', {
+  fetch(DATA_URL, {
     method: 'POST',
     body: JSON.stringify({
       product_id: productId,
       ua: navigator.userAgent
     })
-  }).catch(err => {
-    console.log('tracking error', err);
-  });
+  }).catch(() => {});
 }
 </script>
 
-  
-  
 </body>
 </html>
