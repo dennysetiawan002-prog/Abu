@@ -112,8 +112,12 @@ body {
 </div>
 
 <div class="container">
+  <div id="loading" style="text-align:center;padding:20px;">
+    ⏳ Memuat promo…
+  </div>
   <div class="products" id="products"></div>
 </div>
+
 
 <a href="#" id="shopeeButton" class="shopee-btn">🚀 Buka Shopee App</a>
 
@@ -156,34 +160,65 @@ document.getElementById("installBtn").onclick = async () => {
 };
 
 // LOAD PRODUK
+function renderProducts(data) {
+  const products = document.getElementById("products");
+  const shopeeBtn = document.getElementById("shopeeButton");
+
+  products.innerHTML = "";
+
+  if (data.length) shopeeBtn.href = data[0].link;
+
+  data.forEach(p => {
+    if (!p.image || !p.link) return;
+
+    const a = document.createElement("a");
+    a.href = p.link;
+    a.target = "_blank";
+
+    // 🔥 klik ringan (B)
+    a.onclick = () => {
+      setTimeout(() => {
+        trackProductClick(p.id || p.link || 'unknown');
+      }, 0);
+    };
+
+    const d = document.createElement("div");
+    d.className = "product";
+
+    const i = document.createElement("img");
+    i.src = p.image;
+
+    d.appendChild(i);
+    a.appendChild(d);
+    products.appendChild(a);
+  });
+
+  document.getElementById("loading").style.display = "none";
+}
+
+  // 🔹 TAMPILKAN DARI CACHE DULU (CEPAT)
+const cached = localStorage.getItem("products_cache");
+if (cached) {
+  try {
+    renderProducts(JSON.parse(cached));
+  } catch (e) {
+    console.log("Cache rusak");
+  }
+}
+
+// 🔹 FETCH DATA TERBARU (BACKGROUND)
 fetch(DATA_URL + "?action=products")
   .then(res => res.json())
   .then(json => {
     const data = json.data ? json.data : json;
-    console.log(data);
-    const products = document.getElementById("products");
-    const shopeeBtn = document.getElementById("shopeeButton");
+    localStorage.setItem("products_cache", JSON.stringify(data));
+    renderProducts(data);
+  })
+  .catch(err => {
+    document.getElementById("loading").innerText = "Gagal memuat promo";
+    console.log(err);
+  });
 
-    if (data.length) shopeeBtn.href = data[0].link;
-
-    data.forEach(p => {
-  if (!p.image || !p.link) return;
-
-  const a = document.createElement("a");
-  a.href = p.link;
-  a.target = "_blank";
-  a.onclick = () => trackProductClick(p.id || p.link || 'unknown');
-
-  const d = document.createElement("div");
-  d.className = "product";
-
-  const i = document.createElement("img");
-  i.src = p.image;
-
-  d.appendChild(i);
-  a.appendChild(d);
-  products.appendChild(a);
-});
 
   });
 </script>
