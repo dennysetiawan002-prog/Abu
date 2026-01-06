@@ -172,8 +172,6 @@ function renderProducts(data) {
     return;
   }
 
-  let rendered = false;
-
   data.forEach(p => {
     if (!p || !p.image || !p.link) return;
 
@@ -195,13 +193,15 @@ function renderProducts(data) {
     d.appendChild(i);
     a.appendChild(d);
     products.appendChild(a);
-
-    // 🔥 BEGITU 1 PRODUK MASUK → LOADING MATI
-    if (!rendered) {
-      loading.style.display = "none";
-      rendered = true;
-    }
   });
+
+  if (data.length && data[0].link) {
+    shopeeBtn.href = data[0].link;
+  }
+
+  loading.style.display = "none";
+}
+
 
   // Kalau data kosong → tetap matikan loading
   if (!rendered) {
