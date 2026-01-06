@@ -203,18 +203,6 @@ function renderProducts(data) {
 }
 
 
-  // Kalau data kosong → tetap matikan loading
-  if (!rendered) {
-    loading.style.display = "none";
-  }
-
-  if (data.length && data[0].link) {
-    shopeeBtn.href = data[0].link;
-  }
-}
-
-}
-
   // 🔹 TAMPILKAN DARI CACHE DULU (CEPAT)
 const cached = localStorage.getItem("products_cache");
 if (cached) {
