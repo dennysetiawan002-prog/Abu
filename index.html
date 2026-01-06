@@ -193,7 +193,6 @@ function renderProducts(data) {
     products.appendChild(a);
   });
 
-  document.getElementById("loading").style.display = "none";
 }
 
   // 🔹 TAMPILKAN DARI CACHE DULU (CEPAT)
@@ -213,6 +212,7 @@ fetch(DATA_URL + "?action=products")
     const data = json.data ? json.data : json;
     localStorage.setItem("products_cache", JSON.stringify(data));
     renderProducts(data);
+    document.getElementById("loading").style.display = "none";
   })
   .catch(err => {
     document.getElementById("loading").innerText = "Gagal memuat promo";
