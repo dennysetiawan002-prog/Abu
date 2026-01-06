@@ -167,23 +167,24 @@ fetch(DATA_URL)
     if (data.length) shopeeBtn.href = data[0].link;
 
     data.forEach(p => {
-      if (!p.image || !p.link) return;
-      const a = document.createElement("a");
-a.href = p.link;
-a.target = "_blank";
-a.onclick = () => trackProductClick(p.id || p.link);
+  if (!p.image || !p.link) return;
 
+  const a = document.createElement("a");
+  a.href = p.link;
+  a.target = "_blank";
+  a.onclick = () => trackProductClick(p.id || p.link || 'unknown');
 
-      const d = document.createElement("div");
-      d.className = "product";
+  const d = document.createElement("div");
+  d.className = "product";
 
-      const i = document.createElement("img");
-      i.src = p.image;
+  const i = document.createElement("img");
+  i.src = p.image;
 
-      d.appendChild(i);
-      a.appendChild(d);
-      products.appendChild(a);
-    });
+  d.appendChild(i);
+  a.appendChild(d);
+  products.appendChild(a);
+});
+
   });
 </script>
 
