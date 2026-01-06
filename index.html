@@ -160,6 +160,7 @@ fetch(DATA_URL)
   .then(res => res.json())
   .then(json => {
     const data = json.data ? json.data : json;
+    console.log(data);
     const products = document.getElementById("products");
     const shopeeBtn = document.getElementById("shopeeButton");
 
