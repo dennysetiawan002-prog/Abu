@@ -170,7 +170,7 @@ fetch(DATA_URL)
       const a = document.createElement("a");
 a.href = p.link;
 a.target = "_blank";
-a.onclick = () => trackProductClick(p.id);
+a.onclick = () => trackProductClick(p.id || p.link);
 
 
       const d = document.createElement("div");
