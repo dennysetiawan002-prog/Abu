@@ -156,7 +156,7 @@ document.getElementById("installBtn").onclick = async () => {
 };
 
 // LOAD PRODUK
-fetch(DATA_URL)
+fetch(DATA_URL + "?action=products")
   .then(res => res.json())
   .then(json => {
     const data = json.data ? json.data : json;
